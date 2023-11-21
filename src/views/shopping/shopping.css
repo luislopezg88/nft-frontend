@@ -1,0 +1,31 @@
+.side-menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 350px;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000; /* Asegura que el menú esté por encima de otros elementos */
+}
+
+.menu-content {
+  padding: 20px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(
+    0,
+    0,
+    0,
+    0.5
+  ); /* Semi-transparente para actuar como overlay */
+  z-index: 999; /* Asegura que el overlay esté por debajo del menú pero por encima del contenido */
+  display: block;
+}
