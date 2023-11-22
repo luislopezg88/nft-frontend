@@ -52,7 +52,7 @@ const router = createBrowserRouter([
         element: <Colecciones />,
       },
       {
-        path: "/nft-agregate/:id",
+        path: "/nft-agregate/:id/:collection",
         element: <Nft />,
       },
       { path: "/dashboard/:id", element: <Dashboard /> },

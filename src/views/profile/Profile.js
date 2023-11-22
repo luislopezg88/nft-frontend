@@ -14,6 +14,11 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [colecciones, setColecciones] = useState({ data: [], recordsTotal: 0 });
   const [isLoadingCol, setIsLoadingCol] = useState(false);
+  const [activos, setActivos] = useState({
+    data: [],
+    recordsTotal: 0,
+  });
+  const [isLoadingAct, setIsLoadingAct] = useState(false);
 
   const fetchingColecciones = async (id) => {
     setIsLoadingCol(true);
@@ -32,6 +37,26 @@ const Profile = () => {
       console.error(error);
     } finally {
       setIsLoadingCol(false);
+    }
+  };
+
+  const fetchingActivos = async (id) => {
+    setIsLoadingAct(true);
+    try {
+      const response = await fetch(`${API_URL}/activo/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        const json = await response.json();
+        setActivos(json.body);
+      } else {
+        //const json = await response.json();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingAct(false);
     }
   };
 
@@ -59,6 +84,7 @@ const Profile = () => {
   useEffect(() => {
     if (sesion?.info?.id) {
       fetching(sesion.info.id);
+      fetchingActivos(sesion.info.id);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesion]);
@@ -240,6 +266,25 @@ const Profile = () => {
                     {data?.telefono ?? "Agregar teléfono"}
                   </div>
                 </div>
+                {/*Colecciones*/}
+                <div className="border-bottom text-center mt-4">
+                  <div className="d-flex justify-content-between mb-4">
+                    <h3>Colecciones</h3>
+
+                    <Button
+                      color="default"
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+
+                        history(`/collection-agregate/${data?._id ?? 0}`);
+                      }}
+                      size="sm"
+                    >
+                      <i className="fa fa-plus"></i>
+                    </Button>
+                  </div>
+                </div>
                 <div
                   className="my-5 py-4 border-top text-center"
                   style={{
@@ -250,25 +295,6 @@ const Profile = () => {
                   }}
                 >
                   <Row className="justify-content-center ">
-                    <Col
-                      lg="12"
-                      className="d-flex justify-content-between mb-4"
-                    >
-                      <h2>Colecciones</h2>
-
-                      <Button
-                        color="default"
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-
-                          history(`/collection-agregate/${data?._id ?? 0}`);
-                        }}
-                        size="sm"
-                      >
-                        <i className="fa fa-plus"></i>
-                      </Button>
-                    </Col>
                     {isLoadingCol
                       ? "Cargando..."
                       : colecciones.data.length === 0
@@ -279,7 +305,7 @@ const Profile = () => {
                               <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                                 {item.nombre}
                               </p>
-                              {item.imagen === "" ? (
+                              {item.imagen !== "" ? (
                                 <img
                                   alt="..."
                                   className="img-fluid rounded shadow m-auto"
@@ -311,13 +337,71 @@ const Profile = () => {
                                 className="mt-2"
                                 onClick={(e) => {
                                   e.preventDefault();
-                                  history(`/nft-agregate/${item._id}`);
+                                  history(
+                                    `/nft-agregate/${item._id}/${item.nombre}`
+                                  );
                                 }}
                                 size="sm"
                               >
                                 <i className="fa fa-plus"></i>
                                 <span className="m-1">Agregar nft</span>
                               </Button>
+                            </div>
+                          </Col>
+                        ))}
+                  </Row>
+                </div>
+              </div>
+              {/* Activo*/}
+              <div className="border-bottom text-center">
+                <h3>NFT </h3>
+              </div>
+              <div className="px-4">
+                <div
+                  className="my-5 py-4 border-top text-center"
+                  style={{
+                    background: "#d5d7ed",
+                    borderRadius: "1rem",
+                    paddingRight: "15px",
+                    paddingLeft: "15px",
+                  }}
+                >
+                  <Row className="justify-content-center ">
+                    {isLoadingAct
+                      ? "Cargando..."
+                      : activos.data.length === 0
+                      ? "Sin registro"
+                      : activos.data.map((item, index) => (
+                          <Col sm="4" xs="6" key={index}>
+                            <div className="card mb-2">
+                              <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                                {item.nombre}
+                              </p>
+                              {item.imagen !== "" ? (
+                                <img
+                                  alt="..."
+                                  className="img-fluid rounded shadow m-auto"
+                                  src={require("assets/img/theme/nft-2.jpg")}
+                                  width={100}
+                                  height={100}
+                                  style={{ width: "250px", height: "250px" }}
+                                />
+                              ) : (
+                                <img
+                                  alt="..."
+                                  className="img-fluid rounded shadow m-auto"
+                                  src={`${imgURl}/${item.imagen}`}
+                                />
+                              )}
+
+                              <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
+                                <b>{item.descripcion}</b>
+                              </p>
+                              <Badge className="badge-default">
+                                <span className="text-light">
+                                  {item.precio}
+                                </span>
+                              </Badge>
                             </div>
                           </Col>
                         ))}

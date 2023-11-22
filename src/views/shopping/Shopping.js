@@ -5,7 +5,6 @@ import {
   Container,
   Row,
   Col,
-  Badge,
   Alert,
   Spinner,
   Form,
@@ -14,6 +13,7 @@ import {
   InputGroupAddon,
   FormGroup,
   Input,
+  Badge,
 } from "reactstrap";
 import NavbarClient from "components/Navbars/NavbarClient";
 //Service
@@ -47,11 +47,6 @@ const Compras = () => {
     useShopping();
   const sesion = useAuth();
   //Hook
-  const [chefs, setChefs] = useState({ data: [], recordsTotal: 0 });
-  const [isLoadingChef, setIsLoadingChef] = useState(false);
-  //Platos
-  const [platos, setPlatos] = useState({ data: [], recordsTotal: 0 });
-  const [isLoadingPlato, setIsLoadingPlato] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
   const [process, setProcess] = useState(false);
   const [complet, setComplet] = useState(false);
@@ -62,53 +57,59 @@ const Compras = () => {
   const [form, setForm] = useState(INITIAL);
   const [processLogin, setProcessLogin] = useState(false);
   const [errorForm, setErrorForm] = useState("");
+  const [colecciones, setColecciones] = useState({ data: [], recordsTotal: 0 });
+  const [isLoadingCol, setIsLoadingCol] = useState(false);
+  const [activos, setActivos] = useState({
+    data: [],
+    recordsTotal: 0,
+  });
+  const [isLoadingAct, setIsLoadingAct] = useState(false);
 
-  const fetching = async () => {
-    setIsLoadingChef(true);
+  const fetchingColecciones = async (id) => {
+    setIsLoadingCol(true);
     try {
-      const response = await fetch(`${API_URL}/chef`, {
+      const response = await fetch(`${API_URL}/coleccion/`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
       if (response.ok) {
         const json = await response.json();
-        setChefs(json.body);
+        setColecciones(json.body);
       } else {
-        const json = await response.json();
-        console.error(json);
+        //const json = await response.json();
       }
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoadingChef(false);
+      setIsLoadingCol(false);
+    }
+  };
+
+  const fetchingActivos = async (id) => {
+    setIsLoadingAct(true);
+    try {
+      const response = await fetch(`${API_URL}/activo/`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (response.ok) {
+        const json = await response.json();
+        setActivos(json.body);
+      } else {
+        //const json = await response.json();
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoadingAct(false);
     }
   };
 
   useEffect(() => {
-    //fetching();
+    fetchingColecciones();
+    fetchingActivos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handlePlatos = async (id) => {
-    setIsLoadingPlato(true);
-    try {
-      const response = await fetch(`${API_URL}/platos/chef/${id}`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
-      if (response.ok) {
-        const json = await response.json();
-        setPlatos(json.body);
-      } else {
-        const json = await response.json();
-        console.error(json);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoadingPlato(false);
-    }
-  };
 
   const productInCart = (product) => {
     const condicion = cart.some((item) => item._id === product._id);
@@ -186,28 +187,28 @@ const Compras = () => {
   };
 
   const onDismissForm = () => setErrorForm("");
-
+  const badge = (id) => {
+    const map = [
+      { label: "Seleccionar", value: 0 },
+      { label: "Abstracto", value: 1 },
+      { label: "Arte Digital", value: 2 },
+      { label: "Arte Conceptual", value: 3 },
+      { label: "Arte Fantástico", value: 4 },
+      { label: "Arte Surrealista", value: 5 },
+      { label: "Ilustración", value: 6 },
+      { label: "Arte 3D", value: 7 },
+      { label: "Arte Generativo", value: 8 },
+      { label: "Fotografía Digital", value: 9 },
+      { label: "Arte de Personajes", value: 10 },
+      { label: "Paisajes Digitales", value: 11 },
+      { label: "Arte Contemporáneo", value: 12 },
+    ];
+    const item = map.find((item) => item.value === parseInt(id));
+    return item?.label ?? "";
+  };
   const isSesion = useMemo(() => {
     return Object.keys(sesion.info).length > 0;
   }, [sesion.info]);
-  //Catalogo
-  const catEspecialidades = [
-    { label: "Cocina Francesa", value: "1" },
-    { label: "Cocina Italiana", value: "2" },
-    { label: "Cocina Asiática", value: "3" },
-    { label: "Cocina Mexicana", value: "4" },
-    { label: "Cocina Mediterránea", value: "5" },
-    { label: "Cocina Vegetariana", value: "6" },
-    { label: "Cocina Vegana", value: "7" },
-    { label: "Cocina de Fusión", value: "8" },
-    { label: "Cocina de Autor", value: "9" },
-    { label: "Cocina Molecular", value: "10" },
-    { label: "Parrilla/Asados", value: "11" },
-    { label: "Repostería", value: "12" },
-    { label: "Sushi", value: "13" },
-    { label: "Tapas", value: "14" },
-    { label: "Comida Étnica", value: "15" },
-  ];
 
   return (
     <>
@@ -248,7 +249,7 @@ const Compras = () => {
           <Container>
             <Card className="card-profile shadow mt--300">
               <div className="px-4">
-                <Row className="justify-content-center">
+                {/*<Row className="justify-content-center">
                   <Col className="order-lg-2" lg="3">
                     <div className="card-profile-image">
                       <a href="#pablo" onClick={(e) => e.preventDefault()}>
@@ -271,168 +272,108 @@ const Compras = () => {
                   <Col className="order-lg-1" lg="4">
                     <div className="card-profile-stats d-flex justify-content-center">
                       <div>
-                        <span className="heading">{chefs.recordsTotal}</span>
-                        <span className="description">Todo</span>
+                        <span className="heading">{day}</span>
+                        <span className="description"></span>
                       </div>
                       <div>
-                        <span className="heading">{chefs.recordsTotal}</span>
-                        <span className="description">Arte</span>
+                        <span className="heading"> {month}</span>
+                        <span className="description"></span>
                       </div>
                       <div>
-                        <span className="heading">{chefs.recordsTotal}</span>
-                        <span className="description">Fotografia</span>
+                        <span className="heading">{year}</span>
+                        <span className="description"></span>
                       </div>
                     </div>
                   </Col>
-                </Row>
-                {/*<div className="text-center mt-5">
-                  <h3>
-                    Ordenar
-                    <span className="font-weight-light">, comida</span>
-                  </h3>
-  </div>*/}
-                <div className="mt-5 py-5 border-top"> </div>
-                <Row className="justify-content-center">
-                  <Col lg="12">
-                    <Button
-                      color="default"
-                      outline
-                      type="button"
-                      className="ml-2"
-                      onClick={() => {
-                        setPlatos({ data: [], recordsTotal: 0 });
-                      }}
-                      disabled={platos.recordsTotal === 0}
-                    >
-                      {platos.recordsTotal > 0 ? "Limpiar busqueda" : "Chef "}
-                    </Button>
-                  </Col>
-                  {isLoadingChef ? (
-                    "Cargando..."
-                  ) : chefs.data.length === 0 ? (
-                    <Col sm="12" xs="12">
-                      <p>Sin registros</p>
-                    </Col>
-                  ) : (
-                    chefs.data.map((item, indexChef) => (
-                      <Col sm="3" xs="6" key={indexChef}>
-                        <small className="d-block text-uppercase font-weight-bold mb-4 mt-4">
-                          {item?.nombre ?? ""}
-                        </small>
-                        <img
-                          alt="..."
-                          className="img-fluid rounded shadow"
-                          src={require("assets/img/theme/comida.jpg")}
-                          width={100}
-                          height={100}
-                          style={{ width: "150px" }}
-                        />
-                        <small className="d-block text-uppercase font-weight-bold mb-1">
-                          Cocina regional
-                        </small>
-                        {catEspecialidades
-                          .filter((filt) =>
-                            item?.especialidadesculinarias.includes(filt.value)
-                          )
-                          .map((cat, indexCat) => (
-                            <Badge
-                              key={indexCat}
-                              color="warning"
-                              className="mr-1"
-                            >
-                              {cat.label}
-                            </Badge>
-                          ))}
-                        {isSesion ? (
-                          <Button
-                            color="default"
-                            outline
-                            type="button"
-                            className="mt-2"
-                            onClick={() => {
-                              handlePlatos(item._id);
-                            }}
-                          >
-                            Seleccionar
-                          </Button>
-                        ) : null}
-                      </Col>
-                    ))
-                  )}
-                </Row>
-                <div className="mt-5 py-5 border-top"> </div>
-                {isSesion ? (
-                  <Row className="justify-content-center mt-3">
-                    <Col lg="12">
-                      <h2>Platos</h2>
-                    </Col>
-                    {isLoadingPlato ? (
-                      <Col sm="12" xs="12">
-                        <p>Cargando</p>
-                      </Col>
-                    ) : platos.data.length === 0 ? (
-                      <Col sm="12" xs="12" className="mb-4">
-                        <p>Sin registros</p>
-                      </Col>
-                    ) : (
-                      platos.data.map((item) => {
-                        const isProduct = productInCart(item);
+  </Row>*/}
 
-                        return (
-                          <Col sm="3" xs="6" key={item._id}>
-                            <small className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                <Row className="justify-content-center">
+                  <Col lg="12" className="d-flex justify-content-center">
+                    <h2>Colecciones</h2>
+                  </Col>
+                  {isLoadingCol
+                    ? "Cargando.."
+                    : colecciones.data.map((item) => (
+                        <Col lg="3">
+                          <div className="card mb-2">
+                            <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                               {item.nombre}
-                            </small>
-                            <img
-                              alt="..."
-                              className="img-fluid rounded shadow"
-                              src={require("assets/img/theme/comida.jpg")}
-                              width={100}
-                              height={100}
-                              style={{ width: "150px" }}
-                            />
-                            <small className="d-block text-uppercase font-weight-bold mb-1">
-                              <b>{item.descripcion}</b>
-                            </small>
-                            <small className="d-block text-uppercase font-weight-bold mb-1">
-                              <b>Costo:</b>
-                              {item.precio}
-                            </small>
-                            {isProduct ? (
-                              <Button
-                                className="my-4"
-                                color="danger"
-                                type="submit"
-                                onClick={() => {
-                                  deletFromProduct(item);
-                                }}
-                              >
-                                x
-                              </Button>
+                            </p>
+                            {item.imagen !== "" ? (
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src={require("assets/img/theme/nft-2.jpg")}
+                                width={100}
+                                height={100}
+                                style={{ width: "250px", height: "250px" }}
+                              />
                             ) : (
-                              <Button
-                                className="my-4"
-                                color="primary"
-                                type="submit"
-                                onClick={() => {
-                                  addToProduct(item);
-                                }}
-                              >
-                                +
-                              </Button>
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src=""
+                              />
                             )}
-                          </Col>
-                        );
-                      })
-                    )}
-                  </Row>
-                ) : null}
+
+                            <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
+                              <b>{item.descripcion}</b>
+                            </p>
+                            <Badge className="badge-default">
+                              <span className="text-light">
+                                {badge(item.estilo)}
+                              </span>
+                            </Badge>
+                          </div>
+                        </Col>
+                      ))}
+                </Row>
+                <div className="mt-5 py-5 border-top"> </div>
+                {/*NFT*/}
+                <Row className="justify-content-center mt-3">
+                  <Col lg="12" className="d-flex justify-content-center">
+                    <h2>NFT</h2>
+                  </Col>
+
+                  {isLoadingAct
+                    ? "Cargando.."
+                    : activos.data.map((item) => (
+                        <Col lg="2" className="d-flex justify-content-center">
+                          <div className="card mb-2">
+                            <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                              {item.nombre}
+                            </p>
+                            {item.imagen !== "" ? (
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src={require("assets/img/theme/nft-2.jpg")}
+                                width={100}
+                                height={100}
+                                style={{ width: "250px", height: "250px" }}
+                              />
+                            ) : (
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src=""
+                              />
+                            )}
+
+                            <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
+                              <b>{item.descripcion}</b>
+                            </p>
+                          </div>
+                        </Col>
+                      ))}
+                </Row>
               </div>
             </Card>
             <Alert color="info" isOpen={error !== ""} toggle={onDismiss}>
               {error}
             </Alert>
           </Container>
+          {/*SideMenu*/}
           <SideMenu isOpen={sideMenu} setIsOpen={setSideMenu}>
             <div>
               <div className="mb-2">

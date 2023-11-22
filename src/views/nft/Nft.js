@@ -30,7 +30,7 @@ const initial = {
   visto: 0,
 };
 const Nft = () => {
-  const { id } = useParams();
+  const { id, collection } = useParams();
   const { info } = useAuth();
   const history = useNavigate();
   const [form, setForm] = useState(initial);
@@ -207,6 +207,7 @@ const Nft = () => {
                   </Col>
                 </Row>
                 <div className="text-center mt-5">
+                  <h3>{collection} </h3>
                   <h3>
                     <b>NFT /</b>
                     <span className="font-weight-light mr-1 ml-1">
