@@ -88,7 +88,7 @@ const Compras = () => {
   const fetchingActivos = async (id) => {
     setIsLoadingAct(true);
     try {
-      const response = await fetch(`${API_URL}/activo/`, {
+      const response = await fetch(`${API_URL}/activo/coleccion/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -107,7 +107,6 @@ const Compras = () => {
 
   useEffect(() => {
     fetchingColecciones();
-    fetchingActivos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -187,6 +186,7 @@ const Compras = () => {
   };
 
   const onDismissForm = () => setErrorForm("");
+
   const badge = (id) => {
     const map = [
       { label: "Seleccionar", value: 0 },
@@ -294,7 +294,7 @@ const Compras = () => {
                   {isLoadingCol
                     ? "Cargando.."
                     : colecciones.data.map((item) => (
-                        <Col lg="3">
+                        <Col lg="3" key={item._id}>
                           <div className="card mb-2">
                             <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                               {item.nombre}
@@ -324,6 +324,21 @@ const Compras = () => {
                                 {badge(item.estilo)}
                               </span>
                             </Badge>
+                            {isSesion ? (
+                              <Button
+                                color="default"
+                                type="button"
+                                className="mt-2"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  fetchingActivos(item._id);
+                                }}
+                                size="sm"
+                              >
+                                <i className="fa fa-plus"></i>
+                                <span className="m-1">Ver NFT</span>
+                              </Button>
+                            ) : null}
                           </div>
                         </Col>
                       ))}
@@ -332,40 +347,74 @@ const Compras = () => {
                 {/*NFT*/}
                 <Row className="justify-content-center mt-3">
                   <Col lg="12" className="d-flex justify-content-center">
-                    <h2>NFT</h2>
+                    <h2>
+                      {activos.data.length === 0
+                        ? "Selecione una colección"
+                        : "NFT"}
+                    </h2>
                   </Col>
 
                   {isLoadingAct
                     ? "Cargando.."
-                    : activos.data.map((item) => (
-                        <Col lg="2" className="d-flex justify-content-center">
-                          <div className="card mb-2">
-                            <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
-                              {item.nombre}
-                            </p>
-                            {item.imagen !== "" ? (
-                              <img
-                                alt="..."
-                                className="img-fluid rounded shadow m-auto"
-                                src={require("assets/img/theme/nft-2.jpg")}
-                                width={100}
-                                height={100}
-                                style={{ width: "250px", height: "250px" }}
-                              />
-                            ) : (
-                              <img
-                                alt="..."
-                                className="img-fluid rounded shadow m-auto"
-                                src=""
-                              />
-                            )}
+                    : activos.data.map((item) => {
+                        const isProduct = productInCart(item);
+                        return (
+                          <Col
+                            lg="2"
+                            className="d-flex justify-content-center"
+                            key={item._id}
+                          >
+                            <div className="card mb-2">
+                              <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                                {item.nombre}
+                              </p>
+                              {item.imagen !== "" ? (
+                                <img
+                                  alt="..."
+                                  className="img-fluid rounded shadow m-auto"
+                                  src={require("assets/img/theme/nft-2.jpg")}
+                                  width={100}
+                                  height={100}
+                                  style={{ width: "250px", height: "250px" }}
+                                />
+                              ) : (
+                                <img
+                                  alt="..."
+                                  className="img-fluid rounded shadow m-auto"
+                                  src=""
+                                />
+                              )}
 
-                            <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
-                              <b>{item.descripcion}</b>
-                            </p>
-                          </div>
-                        </Col>
-                      ))}
+                              <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
+                                <b>{item.descripcion}</b>
+                              </p>
+                              {isProduct ? (
+                                <Button
+                                  className="my-4"
+                                  color="danger"
+                                  type="submit"
+                                  onClick={() => {
+                                    deletFromProduct(item);
+                                  }}
+                                >
+                                  x
+                                </Button>
+                              ) : (
+                                <Button
+                                  className="my-4"
+                                  color="primary"
+                                  type="submit"
+                                  onClick={() => {
+                                    addToProduct(item);
+                                  }}
+                                >
+                                  +
+                                </Button>
+                              )}
+                            </div>
+                          </Col>
+                        );
+                      })}
                 </Row>
               </div>
             </Card>
