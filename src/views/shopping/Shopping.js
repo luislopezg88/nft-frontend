@@ -128,7 +128,7 @@ const Compras = () => {
         return {
           _id: item._id,
           id_usuario: item.id_usuario,
-          cantidad: item.cantidad,
+          cantidad: item.cantidad, 
         };
       });
       const response = await fetch(`${API_URL}/carrito`, {
