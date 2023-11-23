@@ -209,7 +209,7 @@ const Compras = () => {
   const isSesion = useMemo(() => {
     return Object.keys(sesion.info).length > 0;
   }, [sesion.info]);
-
+  console.log(sesion);
   return (
     <>
       <NavbarClient
@@ -358,6 +358,8 @@ const Compras = () => {
                     ? "Cargando.."
                     : activos.data.map((item) => {
                         const isProduct = productInCart(item);
+                        const current = sesion.info.id === item.id_usuario;
+                        console.log(current);
                         return (
                           <Col
                             lg="2"
@@ -388,28 +390,32 @@ const Compras = () => {
                               <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                                 <b>{item.descripcion}</b>
                               </p>
-                              {isProduct ? (
-                                <Button
-                                  className="my-4"
-                                  color="danger"
-                                  type="submit"
-                                  onClick={() => {
-                                    deletFromProduct(item);
-                                  }}
-                                >
-                                  x
-                                </Button>
-                              ) : (
-                                <Button
-                                  className="my-4"
-                                  color="primary"
-                                  type="submit"
-                                  onClick={() => {
-                                    addToProduct(item);
-                                  }}
-                                >
-                                  +
-                                </Button>
+                              {current ? null : (
+                                <div>
+                                  {isProduct ? (
+                                    <Button
+                                      className="my-4"
+                                      color="danger"
+                                      type="submit"
+                                      onClick={() => {
+                                        deletFromProduct(item);
+                                      }}
+                                    >
+                                      x
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      className="my-4"
+                                      color="primary"
+                                      type="submit"
+                                      onClick={() => {
+                                        addToProduct(item);
+                                      }}
+                                    >
+                                      +
+                                    </Button>
+                                  )}
+                                </div>
                               )}
                             </div>
                           </Col>
