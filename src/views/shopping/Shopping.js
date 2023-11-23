@@ -43,7 +43,7 @@ const SideMenu = ({ children, isOpen, setIsOpen }) => {
 };
 const INITIAL = { correo: "", clave: "", rol: "CLIENT" };
 const Compras = () => {
-  const { cart, addToProduct, removeFromProduct, deletFromProduct } =
+  const { cart, addToProduct, removeFromProduct, deletFromProduct, clearCart } =
     useShopping();
   const sesion = useAuth();
   //Hook
@@ -209,7 +209,12 @@ const Compras = () => {
   const isSesion = useMemo(() => {
     return Object.keys(sesion.info).length > 0;
   }, [sesion.info]);
-  console.log(sesion);
+
+  useEffect(() => {
+    if (Object.keys(sesion.info).length > 0) {
+      clearCart();
+    }
+  }, [sesion.info]);
   return (
     <>
       <NavbarClient
@@ -353,75 +358,81 @@ const Compras = () => {
                         : "NFT"}
                     </h2>
                   </Col>
-
-                  {isLoadingAct
-                    ? "Cargando.."
-                    : activos.data.map((item) => {
-                        const isProduct = productInCart(item);
-                        const current = sesion.info.id === item.id_usuario;
-                        console.log(current);
-                        return (
-                          <Col
-                            lg="2"
-                            className="d-flex justify-content-center"
-                            key={item._id}
-                          >
-                            <div className="card mb-2">
-                              <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
-                                {item.nombre}
-                              </p>
-                              {item.imagen !== "" ? (
-                                <img
-                                  alt="..."
-                                  className="img-fluid rounded shadow m-auto"
-                                  src={require("assets/img/theme/nft-2.jpg")}
-                                  width={100}
-                                  height={100}
-                                  style={{ width: "250px", height: "250px" }}
-                                />
-                              ) : (
-                                <img
-                                  alt="..."
-                                  className="img-fluid rounded shadow m-auto"
-                                  src=""
-                                />
-                              )}
-
-                              <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
-                                <b>{item.descripcion}</b>
-                              </p>
-                              {current ? null : (
-                                <div>
-                                  {isProduct ? (
-                                    <Button
-                                      className="my-4"
-                                      color="danger"
-                                      type="submit"
-                                      onClick={() => {
-                                        deletFromProduct(item);
-                                      }}
-                                    >
-                                      x
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      className="my-4"
-                                      color="primary"
-                                      type="submit"
-                                      onClick={() => {
-                                        addToProduct(item);
-                                      }}
-                                    >
-                                      +
-                                    </Button>
-                                  )}
-                                </div>
-                              )}
-                            </div>
-                          </Col>
-                        );
-                      })}
                 </Row>
+                {isSesion ? (
+                  <Row className="mb-4">
+                    {isLoadingAct
+                      ? "Cargando.."
+                      : activos.data.map((item) => {
+                          const isProduct = productInCart(item);
+                          const current = sesion.info.id === item.id_usuario;
+
+                          return (
+                            <Col
+                              lg="2"
+                              className="d-flex justify-content-center"
+                              key={item._id}
+                            >
+                              <div className="card mb-2">
+                                <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                                  {item.nombre}
+                                </p>
+                                {item.imagen !== "" ? (
+                                  <img
+                                    alt="..."
+                                    className="img-fluid rounded shadow m-auto"
+                                    src={require("assets/img/theme/nft-2.jpg")}
+                                    width={100}
+                                    height={100}
+                                    style={{
+                                      width: "250px",
+                                      height: "250px",
+                                    }}
+                                  />
+                                ) : (
+                                  <img
+                                    alt="..."
+                                    className="img-fluid rounded shadow m-auto"
+                                    src=""
+                                  />
+                                )}
+
+                                <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
+                                  <b>{item.descripcion}</b>
+                                </p>
+                                {current ? null : (
+                                  <div>
+                                    {isProduct ? (
+                                      <Button
+                                        className="my-4"
+                                        color="danger"
+                                        type="submit"
+                                        onClick={() => {
+                                          deletFromProduct(item);
+                                        }}
+                                      >
+                                        x
+                                      </Button>
+                                    ) : (
+                                      <Button
+                                        className="my-4"
+                                        color="primary"
+                                        type="submit"
+                                        onClick={() => {
+                                          addToProduct(item);
+                                        }}
+                                      >
+                                        +
+                                      </Button>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
+                            </Col>
+                          );
+                        })}
+                  </Row>
+                ) : null}
               </div>
             </Card>
             <Alert color="info" isOpen={error !== ""} toggle={onDismiss}>
