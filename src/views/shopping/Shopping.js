@@ -124,17 +124,17 @@ const Compras = () => {
     e.preventDefault();
     setProcess(true);
     try {
-      const listaPlatos = cart.map((item) => {
+      const listaColecciones = cart.map((item) => {
         return {
           _id: item._id,
-          id_chef: item.id_chef,
+          id_usuario: item.id_usuario,
           cantidad: item.cantidad,
         };
       });
       const response = await fetch(`${API_URL}/carrito`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ listaPlatos: listaPlatos }),
+        body: JSON.stringify({ listaColecciones: listaColecciones }),
       });
       if (response.ok) {
         //const json = await response.json();
