@@ -30,9 +30,9 @@ const Dashboard = () => {
   const sesion = useAuth();
   const { idChef } = useParams();
   const history = useNavigate();
-  const [ventasPorChef, setVentasPorChef] = useState([]);
-  const [platosVendidos, setPlatosVendidos] = useState([]);
-  const [platosChef, setPlatosChef] = useState([]);
+  const [ventasPorUsuario, setVentasPorUsuario] = useState([]);
+  const [ColeccionesVendidas, setColeccionesVendidos] = useState([]);
+  const [coleccionesUsuario, setColeccionesUsuario] = useState([]);
 
   const options = {
     responsive: true,
@@ -73,7 +73,7 @@ const Dashboard = () => {
           };
         });
 
-        setVentasPorChef(clone);
+        setVentasPorUsuario(clone);
       } else {
         const json = await response.json();
       }
@@ -96,12 +96,12 @@ const Dashboard = () => {
           const backgroundColor = `hsla(${hue}, 70%, 50%, 0.5)`;
 
           return {
-            label: item.nombrePlato,
+            label: item.nombreColeccion,
             data: [item.totalVentas],
             backgroundColor: backgroundColor,
           };
         });
-        setPlatosVendidos(clone);
+        setColeccionesVendidos(clone);
       } else {
         const json = await response.json();
       }
@@ -110,10 +110,10 @@ const Dashboard = () => {
     }
   };
 
-  const fetchingPlatosChef = async (id) => {
+  const fetchingcoleccionesUsuario = async (id) => {
     try {
       const response = await fetch(
-        `${API_URL}/dashboard/platosVendidos/${id}`,
+        `${API_URL}/dashboard/ColeccionesVendidas/${sesion.info.id}`,
         {
           method: "GET",
           headers: { "Content-Type": "application/json" },
@@ -127,12 +127,12 @@ const Dashboard = () => {
           const backgroundColor = `hsla(${hue}, 70%, 50%, 0.5)`;
 
           return {
-            label: item.nombrePlato,
+            label: item.nombreColeccion,
             data: [item.totalVentas],
             backgroundColor: backgroundColor,
           };
         });
-        setPlatosChef(clone);
+        setColeccionesUsuario(clone);
       } else {
         const json = await response.json();
       }
@@ -143,17 +143,17 @@ const Dashboard = () => {
   //DataSet
   const data = {
     labels,
-    datasets: ventasPorChef,
+    datasets: ventasPorUsuario,
   };
 
   const dataDos = {
     labels,
-    datasets: platosVendidos,
+    datasets: ColeccionesVendidas,
   };
 
   const dataTres = {
     labels,
-    datasets: platosChef,
+    datasets: coleccionesUsuario,
   };
 
   useEffect(() => {
@@ -163,7 +163,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (idChef !== "") {
-      fetchingPlatosChef(idChef);
+      fetchingcoleccionesUsuario(idChef);
     }
   }, [idChef]);
   return (
@@ -231,14 +231,14 @@ const Dashboard = () => {
                   </Row>
                   <Row className="justify-content-center my-5">
                     <Col lg="12">
-                      <h2>Platos vendidos de todos los chefs</h2>
+                      <h2>Colecciones vendidas de todos los usuarios</h2>
                     </Col>
                     <Bar options={options} data={dataDos} />
                   </Row>
                   <Row className="justify-content-center my-5">
                     <Col lg="12">
                       <h2>
-                        Platos vendidos del chef {sesion?.info?.name ?? ""}
+                        Colecciones vendidas del usuario {sesion?.info?.name ?? ""}
                       </h2>
                     </Col>
                     <Bar options={options} data={dataTres} />
