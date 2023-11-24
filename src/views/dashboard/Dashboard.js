@@ -50,12 +50,15 @@ const Dashboard = () => {
   const labels = ["noviembre", "diciembre"];
 
   //Solicitud
-  const fetchingVentasPorChef = async () => {
+  const fetchingsUsuario = async () => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/ventasPorChef`, {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `${API_URL}/dashboard/usuario/${sesion.info.id}`,
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (response.ok) {
         const json = await response.json();
 
@@ -64,7 +67,7 @@ const Dashboard = () => {
           const backgroundColor = `hsla(${hue}, 70%, 50%, 0.5)`;
 
           return {
-            label: item.nombreChef,
+            label: item.nombreUsuario,
             data: [item.totalVentas],
             backgroundColor: backgroundColor,
           };
@@ -79,9 +82,9 @@ const Dashboard = () => {
     }
   };
 
-  const fetchingPlatosVendidos = async () => {
+  const fetchingColeciones = async () => {
     try {
-      const response = await fetch(`${API_URL}/dashboard/platosVendidos`, {
+      const response = await fetch(`${API_URL}/dashboard/ColeccionesVendidas`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -154,8 +157,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchingVentasPorChef();
-    fetchingPlatosVendidos();
+    fetchingsUsuario();
+    fetchingColeciones();
   }, [sesion]);
 
   useEffect(() => {
@@ -222,7 +225,7 @@ const Dashboard = () => {
                 <div className="mt-5 py-5 border-top text-center">
                   <Row className="justify-content-center mb-5">
                     <Col lg="12">
-                      <h2>Ventas por chefs</h2>
+                      <h2>Ventas por usuario</h2>
                     </Col>
                     <Bar options={options} data={data} />
                   </Row>
