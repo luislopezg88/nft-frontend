@@ -7,8 +7,6 @@ import {
   Col,
   Form,
   InputGroup,
-  InputGroupText,
-  InputGroupAddon,
   FormGroup,
   Input,
   Label,
@@ -269,7 +267,7 @@ const Nft = () => {
                             />
                           </InputGroup>
                         </FormGroup>
-                        <FormGroup>
+                        {/*<FormGroup>
                           <Label for="exampleEmail">Subir foto</Label>
                           <div>
                             <Input
@@ -278,7 +276,7 @@ const Nft = () => {
                               accept="image/jpeg"
                             />
                           </div>
-                        </FormGroup>
+                        </FormGroup>*/}
                         <div className="text-center">
                           <Button
                             className="my-4"

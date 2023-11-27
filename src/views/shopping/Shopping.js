@@ -128,7 +128,7 @@ const Compras = () => {
         return {
           _id: item._id,
           id_usuario: item.id_usuario,
-          cantidad: item.cantidad, 
+          cantidad: item.cantidad,
         };
       });
       const response = await fetch(`${API_URL}/carrito`, {
@@ -304,7 +304,13 @@ const Compras = () => {
                             <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                               {item.nombre}
                             </p>
-                            {item.imagen !== "" ? (
+                            <img
+                              alt="..."
+                              className="img-fluid rounded shadow m-auto"
+                              src={require("assets/img/theme/nft-2.jpg")}
+                              style={{ width: "250px", height: "250px" }}
+                            />
+                            {/*item.imagen === "" ? (
                               <img
                                 alt="..."
                                 className="img-fluid rounded shadow m-auto"
@@ -319,7 +325,7 @@ const Compras = () => {
                                 className="img-fluid rounded shadow m-auto"
                                 src=""
                               />
-                            )}
+                            )*/}
 
                             <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                               <b>{item.descripcion}</b>
@@ -374,10 +380,19 @@ const Compras = () => {
                               key={item._id}
                             >
                               <div className="card mb-2">
-                                <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
+                                <p className="d-block text-uppercase font-weight-bold mb-4 mt-4 text-center">
                                   {item.nombre}
                                 </p>
-                                {item.imagen !== "" ? (
+                                <img
+                                  alt="..."
+                                  className="img-fluid rounded shadow m-auto"
+                                  src={require("assets/img/theme/nft-4.jpg")}
+                                  style={{
+                                    width: "50px",
+                                    height: "50px",
+                                  }}
+                                />
+                                {/*item.imagen === "" ? (
                                   <img
                                     alt="..."
                                     className="img-fluid rounded shadow m-auto"
@@ -395,7 +410,7 @@ const Compras = () => {
                                     className="img-fluid rounded shadow m-auto"
                                     src=""
                                   />
-                                )}
+                                )*/}
 
                                 <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                                   <b>{item.descripcion}</b>

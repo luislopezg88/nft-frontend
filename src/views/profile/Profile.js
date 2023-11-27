@@ -305,7 +305,15 @@ const Profile = () => {
                               <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                                 {item.nombre}
                               </p>
-                              {item.imagen !== "" ? (
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src={require("assets/img/theme/nft-2.jpg")}
+                                width={100}
+                                height={100}
+                                style={{ width: "250px", height: "250px" }}
+                              />
+                              {/*item.imagen === "" ? (
                                 <img
                                   alt="..."
                                   className="img-fluid rounded shadow m-auto"
@@ -320,7 +328,7 @@ const Profile = () => {
                                   className="img-fluid rounded shadow m-auto"
                                   src={`${imgURl}/${item.imagen}`}
                                 />
-                              )}
+                              )*/}
 
                               <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                                 <b>{item.descripcion}</b>
@@ -377,7 +385,16 @@ const Profile = () => {
                               <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                                 {item.nombre}
                               </p>
-                              {item.imagen !== "" ? (
+                              <img
+                                alt="..."
+                                className="img-fluid rounded shadow m-auto"
+                                src={require("assets/img/theme/nft-4.jpg")}
+                                style={{
+                                  width: "50px",
+                                  height: "50px",
+                                }}
+                              />
+                              {/*item.imagen !== "" ? (
                                 <img
                                   alt="..."
                                   className="img-fluid rounded shadow m-auto"
@@ -392,7 +409,7 @@ const Profile = () => {
                                   className="img-fluid rounded shadow m-auto"
                                   src={`${imgURl}/${item.imagen}`}
                                 />
-                              )}
+                              )*/}
 
                               <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                                 <b>{item.descripcion}</b>
