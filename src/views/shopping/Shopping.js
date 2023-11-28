@@ -17,7 +17,7 @@ import {
 } from "reactstrap";
 import NavbarClient from "components/Navbars/NavbarClient";
 //Service
-import { API_URL } from "service/config";
+import { API_URL, IMG_URL } from "service/config";
 //Hook
 import { useShopping } from "state/stateShopping";
 import { useAuth } from "state/stateAuth";
@@ -214,7 +214,12 @@ const Compras = () => {
     if (Object.keys(sesion.info).length > 0) {
       clearCart();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesion.info]);
+
+  const collection = `${API_URL}/coleccion/imagen`;
+  const active = `${API_URL}/activo/imagen`;
+
   return (
     <>
       <NavbarClient
@@ -304,13 +309,13 @@ const Compras = () => {
                             <p className="d-block text-uppercase font-weight-bold mb-4 mt-4">
                               {item.nombre}
                             </p>
-                            <img
+                            {/*<img
                               alt="..."
                               className="img-fluid rounded shadow m-auto"
                               src={require("assets/img/theme/nft-2.jpg")}
                               style={{ width: "250px", height: "250px" }}
-                            />
-                            {/*item.imagen === "" ? (
+                    />*/}
+                            {item.imagen === "" ? (
                               <img
                                 alt="..."
                                 className="img-fluid rounded shadow m-auto"
@@ -323,9 +328,9 @@ const Compras = () => {
                               <img
                                 alt="..."
                                 className="img-fluid rounded shadow m-auto"
-                                src=""
+                                src={`${collection}/${item.imagen}`}
                               />
-                            )*/}
+                            )}
 
                             <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                               <b>{item.descripcion}</b>
@@ -383,34 +388,24 @@ const Compras = () => {
                                 <p className="d-block text-uppercase font-weight-bold mb-4 mt-4 text-center">
                                   {item.nombre}
                                 </p>
-                                <img
-                                  alt="..."
-                                  className="img-fluid rounded shadow m-auto"
-                                  src={require("assets/img/theme/nft-4.jpg")}
-                                  style={{
-                                    width: "50px",
-                                    height: "50px",
-                                  }}
-                                />
-                                {/*item.imagen === "" ? (
+
+                                {item.imagen === "" ? (
                                   <img
                                     alt="..."
                                     className="img-fluid rounded shadow m-auto"
                                     src={require("assets/img/theme/nft-2.jpg")}
-                                    width={100}
-                                    height={100}
                                     style={{
-                                      width: "250px",
-                                      height: "250px",
+                                      width: "50px",
+                                      height: "50px",
                                     }}
                                   />
                                 ) : (
                                   <img
                                     alt="..."
                                     className="img-fluid rounded shadow m-auto"
-                                    src=""
+                                    src={`${active}/${item.imagen}`}
                                   />
-                                )*/}
+                                )}
 
                                 <p className="d-block text-uppercase mt-1 mb-0 text-center px-2">
                                   <b>{item.descripcion}</b>
